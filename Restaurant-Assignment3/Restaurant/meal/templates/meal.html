@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 style="padding:10px;">Pick your Meal:</h2>
+<div class="container">
+	<div class="row">
+		{% for data in data %}
+		<div class="col-lg-4 col-md-6 mb-4 justify-content-center">
+			<div class="card">
+				<img src="{{data.strCategoryThumb}}" class="card-img-top" alt="Meal Thumb" />
+				<div class="card-body justify-content-center">
+					<h6 class="card-id">{{data.idCategory}}</h6>
+					<h5 class="card-title">{{data.strCategory}}</h5>
+					<p class="card-text">
+						{{data.strCategoryDescription|truncatewords:"10"}}
+					</p>
+					<a href="#" class="btn btn-primary">Order now</a>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}

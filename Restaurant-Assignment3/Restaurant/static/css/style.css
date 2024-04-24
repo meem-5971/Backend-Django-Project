@@ -1,0 +1,23 @@
+body{
+    background-color: #f2caa4;
+    padding: auto;
+}
+
+.navbar{
+    background-color: #f2caa4;
+}
+.res1{
+    width: 650px;
+    height: 450px;
+}
+.intro{
+    padding-top: 150px;
+}
+.abt{
+    
+        /* max-width: 100%;  */
+        height: auto; 
+        width: 600px;
+        border-radius: 10px;
+      
+}
