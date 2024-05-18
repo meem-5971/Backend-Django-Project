@@ -1,0 +1,84 @@
+{% extends 'base.html' %} 
+{% load static %}
+{% block content %}
+
+
+<div class="d-flex flex-wrap px-5 pt-3 align-items-center">
+
+  <div class="col-6">
+    <h1>Welcome to Car Mart</h1>
+    <p>Your premier destination for finding the perfect vehicle to suit your lifestyle. Whether you're searching for a sleek sedan, a rugged SUV, or an eco-friendly hybrid, we offer a wide selection of top-quality cars from trusted brands. Explore our inventory and experience a seamless, customer-focused journey from browsing to driving off in your new car.</p>
+  </div>
+  <div class="col-6">
+<img src="{% static 'carmart_banner.jpg' %}" />
+  </div>
+</div>
+
+<hr/>
+
+<h3>Search by Category</h3>
+<div class="m-3">
+	<div class="container align-items-center">
+			<div class="row mt-5">
+					<div class="col pt-3">
+							<a href="{% url 'home' %}" class="btn btn-outline-primary btn-block mb-3">Show All</a>
+					</div>
+					{% for brand in brand %}
+					<div class="col pt-3">
+							<a href="{% url 'brand_wise' brand.slug %}" class="btn btn-outline-primary btn-block mb-3">{{ brand.name }}</a>
+					</div>
+					{% endfor %}
+			</div>
+	</div>
+</div>
+
+
+
+<h4>{{data | length}} cars found</h4>
+
+<div class="container mx-container bg-body-secondary pt-2 pb-1">
+	<div class="d-flex flex-wrap justify-content-center">
+		{% for brand in brands %}
+			<div class="m-2">
+				<div class="box text-center">
+					<a href="{% url 'brand_wise' brand.slug %}" class="text-decoration-none text-dark"><h5 class="bx">{{ brand.name }}</h5></a>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+</div>
+
+
+
+
+
+<div class="d-flex flex-wrap justify-content-center  pt-5">
+	{% for car in data %}
+	<div class="col-sm-3">
+		<div class="card m-2">
+    <div class="card-body" style="width: 18rem;">
+			<img src="{{car.image.url}}" class="card-img-top" alt="...">		
+			<h5 class="card-title"><a href="{% url 'car_detail' car.id %}" class="text-decoration-none text-dark">{{car.title}}</a></h5>
+			<p class="card-text">Brand: {{car.car_brand}}</p>
+			<p class="card-text">Price: ${{car.price}}</p>
+			<p class="card-text">Remained Quantity: {{car.quantity}}</p>
+			<p class="card-text">{{car.content |truncatewords:10}}</p>
+			<div class="container d-flex flex-wrap gap-10px">
+			{% if request.user.is_authenticated %}
+	<form method="post" action="{% url 'buy_car' car.id %}">
+		{% csrf_token %}
+		<button type="submit" class="btn btn-primary pr-10">Buy Now</button>
+	</form>
+	{% endif %}
+	<a href="{% url 'car_detail' pk=car.pk %}"><button class="btn btn-warning pl-10" style="padding-"> View Details</button></a>
+</div>
+		</div>
+
+	</div>
+	
+</div>
+  {% endfor %}
+</div>
+</div>
+</div>
+{% endblock %}
