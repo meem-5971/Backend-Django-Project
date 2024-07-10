@@ -57,20 +57,23 @@ class DepositMoneyView(TransactionCreateMixin):
         )
         messages.success(self.request,f"{amount}tk was added successfully")
         
-        # send_transaction_email(self.request.user,amount,"Deposit Message","transaction/deposite_email.html")
+        send_transaction_email(self.request.user,amount,"Deposit Message","transaction/deposite_email.html")
         return super().form_valid(form)
     
-def send_borrow_email(user,borrow,subject,template):
-        message=render_to_string(template,{
-            'user':user,
-            'borrow':borrow,
-        })
-        
-        send_email =EmailMultiAlternatives(subject,'',to=[user.email])
-        send_email.attach_alternative(message,'text/html')
-        send_email.send()
+def send_borrow_email(user_account, borrow, subject, template):
+    context = {
+        'user': user_account.user,  # Assuming UserAccount has a related user
+        'borrow': borrow,
+    }
+    
+    message = render_to_string(template, context)
+    
+    send_email = EmailMultiAlternatives(subject, '', to=[user_account.user.email])
+    send_email.attach_alternative(message, 'text/html')
+    send_email.send()
 
-class BorrowBookView(LoginRequiredMixin,View):
+
+class BorrowBookView(LoginRequiredMixin, View):
     def post(self, request, pk):
         book = get_object_or_404(Book, pk=pk)
         user_account = get_object_or_404(UserAccount, user=request.user)
@@ -84,11 +87,11 @@ class BorrowBookView(LoginRequiredMixin,View):
             borrow.save()
 
             messages.success(request, f"{book.title} is borrowed successfully!")
-            # send_borrow_email(user_account, borrow, "Book Borrowing Message", "borrow_email.html")
-            return redirect('borrow_history')  # Redirect to the borrow history page
+            send_borrow_email(user_account, borrow, "Book Borrowing Message", "transaction/borrow_email.html")
+            return redirect('borrow_history')
         else:
             messages.error(request, "Insufficient balance to borrow this book.")
-            return redirect('book_detail', pk=book.pk)  # Redirect to the book detail page if insufficient balance
+            return redirect('book_detail', pk=book.pk)
 
 class ReturnBookView(LoginRequiredMixin, View):
     def post(self, request, pk):
@@ -100,11 +103,10 @@ class ReturnBookView(LoginRequiredMixin, View):
         user_account.save()
 
         messages.success(request, f"{book.title} is returned successfully!")
-        # send_borrow_email(user_account, borrow_book, "Book Returning Message", "return_email.html")
+        send_borrow_email(user_account, borrow_book, "Book Returning Message", "transaction/return_email.html")
         borrow_book.delete()
         
-        return redirect('borrow_history')  # Redirect to the borrow history page
-
+        return redirect('borrow_history')
 
 class BorrowHistoryView(LoginRequiredMixin, View):
     def get(self, request):

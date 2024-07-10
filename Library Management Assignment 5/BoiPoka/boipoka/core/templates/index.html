@@ -54,7 +54,7 @@
           <h5 class="card-title">
             <a href="{% url 'book_detail' book.pk %}" class="text-decoration-none text-dark">{{ book.title }}</a>
           </h5>
-          <p class="card-text">Genre: {{ book.book_genre }}</p>
+          <p class="card-text">Genre: {{ book.genre }}</p>
           <p class="card-text">Price: ${{ book.price }}</p>
           <p class="card-text">{{ book.content|truncatewords:10 }}</p>
           <div class="container d-flex flex-wrap gap-10px">
